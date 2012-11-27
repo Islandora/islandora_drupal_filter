@@ -7,6 +7,10 @@ This is the servlet filter to permit the Fedora Commons repository software to a
 
 For help with configuring the Drupal filter see the servlet_filter_README.txt file in the Islandora download distribution.
 
+Anonymous Users
+===============
+Fedora requires a username for the audit trail so we populate a username of anonymous for empty user names.
+
 Building
 ========
 
