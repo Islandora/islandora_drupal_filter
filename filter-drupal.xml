@@ -14,11 +14,11 @@
     <!-- The values to be inserted below can be found in your drupal site's
          settings.php file at the line:
 
-         $db_url = 'mysqli://root:root@localhost/fedora3';
+         $db_url = 'mysqli://drupaldbuser:drupaldbpass@localhost/drupaldb';
 
          Note that 3306 is the default mysql port.
       -->
-    <connection server="localhost" port="3306" dbname="fedora3" user="root" password="root">
+    <connection server="DB_SERVER" port="3306" dbname="DRUPAL_DB_NAME" user="DRUPAL_DB_USER" password="DRUPAL_DB_PASS">
     <sql>
         <!--Different sql statement for each connection.  This is for drupal 
             multisites that are setup using one database with table prefixes.
