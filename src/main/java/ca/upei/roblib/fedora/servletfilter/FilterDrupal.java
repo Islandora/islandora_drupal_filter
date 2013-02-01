@@ -19,93 +19,73 @@ import org.fcrepo.server.security.servletfilters.BaseCaching;
 //import fedora.server.security.servletfilters.CacheElement;
 import org.fcrepo.server.security.servletfilters.CacheElement;
 import java.util.Map;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- *
+ * 
  * @author ppound
  */
-public class FilterDrupal extends BaseCaching
-        implements Constants{
-    protected static Log log = LogFactory.getLog(FilterDrupal.class);
+public class FilterDrupal extends BaseCaching implements Constants {
+	protected static Logger log = LoggerFactory.getLogger(FilterDrupal.class);
 
+	@Override
+	public void destroy() {
+		String method = "destroy()";
+		log.debug(enter(method));
+		super.destroy();
+		log.debug(exit(method));
+	}
 
+	@Override
+	protected void initThisSubclass(String key, String value) {
+		super.initThisSubclass(key, value);
+		String method = "initThisSubclass()";
+		log.debug(enter(method));
 
-@Override
-    public void destroy() {
-        String method = "destroy()";
-        if (log.isDebugEnabled()) {
-            log.debug(enter(method));
-        }
-        super.destroy();
-        if (log.isDebugEnabled()) {
-            log.debug(exit(method));
-        }
-    }
+		// not sure if we need this method or should call super. seems to work
+		// as is
+	}
 
-    @Override
-    protected void initThisSubclass(String key, String value) {
-         super.initThisSubclass(key,value);
-        String method = "initThisSubclass()";
-        if (log.isDebugEnabled()) {
-            log.debug(enter(method));
-        }
-       
-       //not sure if we need this method or should call super.  seems to work as is
-    }
+	@Override
+	public void populateCacheElement(CacheElement cacheElement, String password) {
+		String method = "populateCacheElement()";
+		log.debug(enter(method));
+		Boolean authenticated = null;
+		Map namedAttributes = null;
+		String errorMessage = null;
+		authenticated = Boolean.FALSE;
 
-    @Override
-    public void populateCacheElement(CacheElement cacheElement, String password) {
-        String method = "populateCacheElement()";
-        if (log.isDebugEnabled()) {
-            log.debug(enter(method));
-        }
-        Boolean authenticated = null;
-        Map namedAttributes = null;
-        String errorMessage = null;
-        authenticated = Boolean.FALSE;
-              
+		DrupalUserInfo parser = new DrupalUserInfo();
+		log.debug("got parser");
+		try {
+			// parser.findUser(cacheElement.getUserid(), password);
+			parser.findUser(cacheElement.getUserid(), password);
+			log.debug("back from databaseQuery");
 
-            DrupalUserInfo parser = new DrupalUserInfo();
-            if (log.isDebugEnabled()) {
-                log.debug("got parser");
-            }
-            try {
-               // parser.findUser(cacheElement.getUserid(), password);
-                parser.findUser(cacheElement.getUserid(),password);
-                if (log.isDebugEnabled()) {
-                    log.debug("back from databaseQuery");
-                }
-           
-            } catch (Throwable th) {
-                String msg = "error quering database";
-               //showThrowable(th, log, msg);
-                log.error(msg);
-                //throw new IOException(msg);
-            }
-            authenticated = parser.getAuthenticated();
-            namedAttributes = parser.getNamedAttributes();
-       
-        if (log.isDebugEnabled()) {
-            log.debug(format(method, null, "authenticated"));
-            log.debug(authenticated);
-            log.debug(format(method, null, "namedAttributes"));
-            log.debug(namedAttributes);
-            log.debug(format(method, null, "errorMessage", errorMessage));
-        }
-        cacheElement.populate(authenticated,
-                              null,
-                             namedAttributes,
-                              errorMessage);
-        if (log.isDebugEnabled()) {
-            log.debug(exit(method));
-        }
-    }
-    
-  /*  public static void main(String args[]){
-        
-        FilterDrupal fd = new FilterDrupal();
-        fd.populateCacheElement(null,null);
-    }*/
+		} catch (Throwable th) {
+			String msg = "error quering database";
+			// showThrowable(th, log, msg);
+			log.error(msg);
+			// throw new IOException(msg);
+		}
+		authenticated = parser.getAuthenticated();
+		namedAttributes = parser.getNamedAttributes();
+
+		log.debug(format(method, null, "authenticated"));
+		log.debug(authenticated.toString());
+		log.debug(format(method, null, "namedAttributes"));
+		log.debug(namedAttributes.toString());
+		log.debug(format(method, null, "errorMessage", errorMessage));
+		cacheElement.populate(authenticated, null, namedAttributes,
+				errorMessage);
+		log.debug(exit(method));
+	}
+
+	/*
+	 * public static void main(String args[]){
+	 * 
+	 * FilterDrupal fd = new FilterDrupal(); fd.populateCacheElement(null,null);
+	 * }
+	 */
 }
