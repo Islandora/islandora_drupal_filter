@@ -25,6 +25,6 @@
             We don't do this but some people might.-->
        SELECT DISTINCT u.uid AS userid, u.name AS Name, u.pass AS Pass,r.name AS Role FROM (users u LEFT JOIN users_roles ON u.uid=users_roles.uid) LEFT JOIN role r ON r.rid=users_roles.rid WHERE u.name=? AND u.pass=?; 
     </sql>     
-    </connection>
-   
+    </connection>   
 </FilterDrupal_Connection>
+
