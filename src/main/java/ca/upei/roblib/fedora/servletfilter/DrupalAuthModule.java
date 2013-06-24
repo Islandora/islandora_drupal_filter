@@ -89,7 +89,7 @@ public class DrupalAuthModule
     private Set<String> attributeValues = null;
     private Map<String, Set<String>> attributes = null;
 
-    private final static String ANONYMOUSROLE = "anonymous";
+    private final static String ANONYMOUSROLE = "anonymous user";
 
     private boolean debug = false;
 
@@ -162,10 +162,6 @@ public class DrupalAuthModule
                 roles = new HashSet<String>();
                 attributes.put("role", roles);
             }
-
-//             roles.add("test1");
-//             roles.add("test2");
-//             roles.add("test3");
 
             subject.getPrincipals().add(p);
             subject.getPublicCredentials().add(attributes);
@@ -248,7 +244,7 @@ public class DrupalAuthModule
         //and the database only gets hit once per user session so we may be ok.
         File drupalConnectionInfo = null;
 
-        //if the user is anonymous don't check the database just give the anonymous role
+        // If the user is anonymous don't check the database just give the anonymous role.
         if ("anonymous".equals(userid) && "anonymous".equals(password)) {
             createAnonymousUser();
             return;
@@ -272,7 +268,7 @@ public class DrupalAuthModule
         }
         List list = filterDoc.selectNodes("//FilterDrupal_Connection/connection");
         Iterator iter = list.iterator();
-        
+
         while (iter.hasNext()) {
             try {
                 Element connection = (Element) iter.next();
@@ -296,7 +292,10 @@ public class DrupalAuthModule
                         this.password = password;
                         attributeValues = new HashSet<String>();
                         if (numericId == 0) {
-                            attributeValues.add("anonymous");//add the role anonymous in case user in drupal is not associated with any Drupal roles.
+                            // Add the role anonymous in case user in drupal is not associated with any Drupal roles.
+                            attributeValues.add(DrupalAuthModule.ANONYMOUSROLE);
+                            // XXX: Maintain old "anonymous" role, in case it it is actually being used.
+                            attributeValues.add("anonymous");
                         } else if (numericId == 1) {
                             attributeValues.add("administrator");
                         } else {
@@ -316,12 +315,9 @@ public class DrupalAuthModule
                 }
             } catch (SQLException ex) {
                 logger.error("Error retrieving user info "+ex.getMessage());
-                //Logger.getLogger(DrupalUserInfo.class.getName()).log(Level.SEVERE, null, ex);
-
             }
-
         }
-	  
+
 	  attributes.put("role", attributeValues);
     }
 
@@ -330,7 +326,10 @@ public class DrupalAuthModule
         this.username = "anonymous";
         this.password = "anonymous";
         attributeValues = new HashSet<String>();
-        attributeValues.add(DrupalAuthModule.ANONYMOUSROLE);//add the role anonymous in case user in drupal is not associated with any Drupal roles.
+        // Add the role anonymous in case user in drupal is not associated with any Drupal roles.
+        attributeValues.add(DrupalAuthModule.ANONYMOUSROLE);
+        // XXX: Maintain old "anonymous" role, in case it it is actually being used.
+        attributeValues.add("anonymous");
         attributes.put("role", attributeValues);
         successLogin = true;
 
