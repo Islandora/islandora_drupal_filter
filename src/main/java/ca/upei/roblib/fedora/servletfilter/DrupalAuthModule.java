@@ -201,30 +201,37 @@ public class DrupalAuthModule
         return true;
     }
 
-    private Connection connectToDB(String server, String database, String user, String pass, String port) {
+    private Connection connectToDB(String server, String database, String user, String pass, String port, String jdbcDriverClass, String jdbcURLProtocol) {
         //assuming all drupal installs use mysql as the db.
-        if (port == null) {
-            port = "3306";
-        }
         Connection conn = null;
+        if (port == null) {
+          port = "3306";
+        }
+        
+        if (jdbcDriverClass == null) {
+            jdbcDriverClass = "com.mysql.jdbc.Driver";
+        }
+        
+        if (jdbcURLProtocol == null) {
+            jdbcURLProtocol = "jdbc:mysql";
+        }
+        
+        String jdbcURL = jdbcURLProtocol + "://" + server + ":" + port + "/" + database + "?" + "user=" + user + "&password=" + pass;
+        
         try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Class.forName(jdbcDriverClass).newInstance();
         } catch (Exception ex) {
             logger.error("Exception: " + ex.getMessage());
-
         }
 
         try {
-            conn =
-                    DriverManager.getConnection("jdbc:mysql://" + server + ":" + port + "/" + database + "?" +
-                    "user=" + user + "&password=" + pass);
-
+            conn = DriverManager.getConnection(jdbcURL);
         } catch (SQLException ex) {
             // handle any errors
             logger.error("SQLException: " + ex.getMessage());
             logger.error("SQLState: " + ex.getSQLState());
             logger.error("VendorError: " + ex.getErrorCode());
-            logger.error("Error Connecting to Database server " + server + " port " + port + " database " + database);
+            logger.error("Error Connecting to Database server " + jdbcURL);
             return null;
         }
         return conn;
@@ -238,7 +245,7 @@ public class DrupalAuthModule
 
     void findUser(String userid, String password) {
     	logger.info("login module findUser");
-    	String server, database, user, pass, port, sql;
+    	String server, database, user, pass, port, jdbcDriverClass, jdbcURLProtocol, sql;
         //we may want to implement a connection pool or something here if performance gets to be
         //an issue.  on the plus side mysql connections are fairly lightweight compared to postgres
         //and the database only gets hit once per user session so we may be ok.
@@ -277,9 +284,11 @@ public class DrupalAuthModule
                 user = connection.attributeValue("user");
                 pass = connection.attributeValue("password");
                 port = connection.attributeValue("port");
+                jdbcDriverClass = connection.attributeValue("jdbcDriverClass");
+                jdbcURLProtocol = connection.attributeValue("jdbcURLProtocol");
                 Element sqlElement = connection.element("sql");
                 sql = sqlElement.getTextTrim();
-                Connection conn = connectToDB(server, database, user, pass, port);
+                Connection conn = connectToDB(server, database, user, pass, port, jdbcDriverClass, jdbcURLProtocol);
                 if (conn != null) {
                     PreparedStatement pstmt = conn.prepareStatement(sql);
                     pstmt.setString(2, password);

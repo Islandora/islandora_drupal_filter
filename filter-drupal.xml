@@ -8,15 +8,19 @@
 
     We will gather all roles for that user from all databases.  This is a 
     potential security risk if a user in one drupal database has the same 
-    username and password as another user in a seperate drupal database.  
-    We are also assuming all drupal dbs to be mysql. -->
+    username and password as another user in a seperate drupal database.  -->
 <FilterDrupal_Connection>
     <!-- The values to be inserted below can be found in your drupal site's
          settings.php file at the line:
 
          $db_url = 'mysqli://drupaldbuser:drupaldbpass@localhost/drupaldb';
 
-         Note that 3306 is the default mysql port.
+         Defaults:
+           - port = 3306
+           - jdbcDriverClass = "com.mysql.jdbc.Driver"
+           - jdbcURLProtocol = "jdbc:mysql"
+
+           postgresql users can set: jdbcDriverClass="org.postgresql.Driver" jdbcURLProtocol="jdbc:postgresql"
       -->
     <connection server="DB_SERVER" port="3306" dbname="DRUPAL_DB_NAME" user="DRUPAL_DB_USER" password="DRUPAL_DB_PASS">
     <sql>
@@ -24,7 +28,7 @@
             multisites that are setup using one database with table prefixes.
             We don't do this but some people might.-->
        SELECT DISTINCT u.uid AS userid, u.name AS Name, u.pass AS Pass,r.name AS Role FROM (users u LEFT JOIN users_roles ON u.uid=users_roles.uid) LEFT JOIN role r ON r.rid=users_roles.rid WHERE u.name=? AND u.pass=?; 
-    </sql>     
+    </sql>
     </connection>   
 </FilterDrupal_Connection>
 
