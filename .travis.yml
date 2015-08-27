@@ -1,4 +1,5 @@
 language: java
+sudo: false
 cache:
   directories:
   - $HOME/.m2
@@ -10,6 +11,15 @@ env:
   - FEDORA_VERSION=3.6.2
   - FEDORA_VERSION=3.7.0
   - FEDORA_VERSION=3.7.1
+before_install:
+  - wget https://github.com/fcrepo3/fcrepo/releases/download/v3.8.1/install-f3-deps.zip
+  - unzip install-f3-deps.zip
+  - cd install-f3-deps/lib
+  - wget http://alpha.library.yorku.ca/mulgara-core-2.1.12.jar
+  - wget http://alpha.library.yorku.ca/mulgara-core-2.1.12.pom
+  - cd $TRAVIS_BUILD_DIR/install-f3-deps
+  - ./install-dependencies.sh
+  - cd $TRAVIS_BUILD_DIR
 script:
   - mvn test -DskipTests=false -Dfedora.version=$FEDORA_VERSION -Ddb.name=drupal_test -Ddb.user=travis -Ddb.pass=""
   - mvn test -DskipTests=false -Dfedora.version=$FEDORA_VERSION -Ddb.name=drupal_test -Ddb.user=postgres -Ddb.pass="" -Ddb.port=5432 -Ddb.class="org.postgresql.Driver" -Ddb.scheme="jdbc:postgresql" -Ddb.group=postgresql -Ddb.artifact=postgresql -Ddb.version="9.1-901.jdbc4"
