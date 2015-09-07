@@ -45,6 +45,16 @@
 		</testResources>
 	</build>
 
+  <repositories>
+    <repository>
+      <id>m2-duraspace</id>
+      <url>http://m2.duraspace.org/content/repositories/releases</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
+
 	<dependencies>
     <dependency>
       <groupId>org.fcrepo</groupId>
