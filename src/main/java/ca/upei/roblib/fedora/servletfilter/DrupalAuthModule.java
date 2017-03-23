@@ -14,7 +14,7 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
-*
+ *
 fedora-auth
 {
         org.fcrepo.server.security.jaas.auth.module.XmlUsersFileModule required
@@ -30,23 +30,19 @@ fedora-auth
 
 package ca.upei.roblib.fedora.servletfilter;
 
-import org.fcrepo.common.Constants;
-
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.File;
 import java.io.InputStream;
-
-import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import java.util.Iterator;
-import java.util.List;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,19 +55,18 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import org.fcrepo.server.security.jaas.auth.UserPrincipal;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.fcrepo.common.Constants;
+import org.fcrepo.server.security.jaas.auth.UserPrincipal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class DrupalAuthModule
-        implements LoginModule {
+implements LoginModule {
 
     protected static final Logger logger =
             LoggerFactory.getLogger(DrupalAuthModule.class);
@@ -85,7 +80,7 @@ public class DrupalAuthModule
     protected Map<String, ?> options = null;
 
     protected String username = null;
-    
+
     protected Set<String> attributeValues = null;
     protected Map<String, Set<String>> attributes = null;
 
@@ -96,9 +91,9 @@ public class DrupalAuthModule
     protected boolean successLogin = false;
 
     public void initialize(Subject subject,
-                           CallbackHandler handler,
-                           Map<String, ?> sharedState,
-                           Map<String, ?> options) {
+            CallbackHandler handler,
+            Map<String, ?> sharedState,
+            Map<String, ?> options) {
         this.subject = subject;
         this.handler = handler;
         this.sharedState = sharedState;
@@ -136,7 +131,7 @@ public class DrupalAuthModule
                     ((PasswordCallback) callbacks[1]).getPassword();
             String password = new String(passwordCharArray);
 
-	        findUser(username, password);
+            findUser(username, password);
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -213,37 +208,38 @@ public class DrupalAuthModule
      * @param jdbcURLProtocol
      * @return
      */
+    @Deprecated
     protected Connection connectToDB(String server, String database, String user, String pass, String port, String jdbcDriverClass, String jdbcURLProtocol) {
-    	HashMap<String, String> settings = new HashMap<String, String>();
-    	settings.put("server", server);
-    	settings.put("database", database);
-    	settings.put("user", user);
-    	settings.put("pass", pass);
-    	settings.put("port", server);
-    	settings.put("jdbcDriverClass", jdbcDriverClass);
-    	settings.put("jdbcURLProtocol", jdbcURLProtocol);
-    	return connectToDB(settings);
+        HashMap<String, String> settings = new HashMap<String, String>();
+        settings.put("server", server);
+        settings.put("database", database);
+        settings.put("user", user);
+        settings.put("pass", pass);
+        settings.put("port", server);
+        settings.put("jdbcDriverClass", jdbcDriverClass);
+        settings.put("jdbcURLProtocol", jdbcURLProtocol);
+        return connectToDB(settings);
     }
     protected Connection connectToDB(Map<String, String> settings) {
         //assuming all drupal installs use mysql as the db.
         Connection conn = null;
         if (settings.get("port") == null) {
-          settings.put("port", "3306");
+            settings.put("port", "3306");
         }
-        
+
         if (settings.get("jdbcDriverClass") == null) {
             settings.put("jdbcDriverClass", "com.mysql.jdbc.Driver");
         }
-        
+
         if (settings.get("jdbcURLProtocol") == null) {
             settings.put("jdbcURLProtocol", "jdbc:mysql");
         }
-        
+
         String jdbcURL = settings.get("jdbcURLProtocol") + "://" +
-        	settings.get("server") + ":" + settings.get("port") + "/" +
-        	settings.get("database") + "?" + "user=" + settings.get("user") +
-        	"&password=" + settings.get("pass");
-        
+                settings.get("server") + ":" + settings.get("port") + "/" +
+                settings.get("database") + "?" + "user=" + settings.get("user") +
+                "&password=" + settings.get("pass");
+
         try {
             Class.forName(settings.get("jdbcDriverClass")).newInstance();
         } catch (Exception ex) {
@@ -265,7 +261,7 @@ public class DrupalAuthModule
 
     /**
      * Get an InputStream containing the config XML.
-     * 
+     *
      * @return
      * @throws IOException
      */
@@ -278,26 +274,26 @@ public class DrupalAuthModule
         File file =  new File(fedoraHome, "server/config/filter-drupal.xml");
         return new FileInputStream(file);
     }
-    
+
     /**
      * Get the parsed XML.
-     * 
+     *
      * @return
      * @throws DocumentException
      * @throws IOException
      */
     protected Document getParsedConfig() throws DocumentException, IOException {
-    	return getParsedConfig(getConfig());
-    }   
+        return getParsedConfig(getConfig());
+    }
     protected Document getParsedConfig(File file) throws DocumentException, IOException {
-    	return getParsedConfig(new FileInputStream(file));
+        return getParsedConfig(new FileInputStream(file));
     }
     protected Document getParsedConfig(InputStream stream) throws DocumentException, IOException {
-    	SAXReader reader = new SAXReader();
-        Document document = reader.read(getConfig());
+        SAXReader reader = new SAXReader();
+        Document document = reader.read(stream);
         return document;
     }
-    
+
     /**
      * @deprecated
      *   This is only still here because it was public... Just in case.
@@ -305,14 +301,15 @@ public class DrupalAuthModule
      * @return
      * @throws DocumentException
      */
+    @Deprecated
     public Document parse(File file) throws DocumentException {
         SAXReader reader = new SAXReader();
         Document document = reader.read(file);
         return document;
     }
-    
+
     protected Map<String, String> parseConnectionElement(Element connection) {
-    	Map<String, String> toReturn = new HashMap<String, String>();
+        Map<String, String> toReturn = new HashMap<String, String>();
         toReturn.put("server", connection.attributeValue("server"));
         toReturn.put("database", connection.attributeValue("dbname"));
         toReturn.put("user", connection.attributeValue("user"));
@@ -322,17 +319,17 @@ public class DrupalAuthModule
         toReturn.put("jdbcURLProtocol", connection.attributeValue("jdbcURLProtocol"));
         Element sqlElement = connection.element("sql");
         toReturn.put("sql", sqlElement.getTextTrim());
-        
+
         return toReturn;
     }
 
     /**
-     * 
+     *
      * @param userid
      * @param password
      */
     protected void findUser(String userid, String password) {
-    	logger.info("login module findUser");
+        logger.info("login module findUser");
 
         // If the user is anonymous don't check the database just give the anonymous role.
         if ("anonymous".equals(userid) && "anonymous".equals(password)) {
@@ -342,25 +339,25 @@ public class DrupalAuthModule
 
         Document filterDoc = null;
         try {
-        	filterDoc = getParsedConfig();
+            filterDoc = getParsedConfig();
         }
         catch (DocumentException e) {
-        	logger.error("Failed to parse the configuration XML.");
-        	return;
+            logger.error("Failed to parse the configuration XML.");
+            return;
         }
         catch (IOException e) {
-        	logger.error("Failed to load the configuration XML.");
-        	return;
+            logger.error("Failed to load the configuration XML.");
+            return;
         }
-        
+
         @SuppressWarnings("unchecked")
-		List<Element> list = filterDoc.selectNodes("//FilterDrupal_Connection/connection");
+        List<Element> list = filterDoc.selectNodes("//FilterDrupal_Connection/connection");
         Iterator<Element> iter = list.iterator();
 
         while (iter.hasNext()) {
             try {
-            	Map<String, String> parsed = parseConnectionElement(iter.next());
-                
+                Map<String, String> parsed = parseConnectionElement(iter.next());
+
                 //we may want to implement a connection pool or something here if performance gets to be
                 //an issue.  on the plus side mysql connections are fairly lightweight compared to postgres
                 //and the database only gets hit once per user session so we may be ok.
@@ -403,7 +400,7 @@ public class DrupalAuthModule
             }
         }
 
-	  attributes.put("role", attributeValues);
+        attributes.put("role", attributeValues);
     }
 
     /**

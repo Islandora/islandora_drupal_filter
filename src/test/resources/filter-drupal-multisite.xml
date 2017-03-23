@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FilterDrupal_Connection>
-	<connection server="${db.server}" port="${db.port}" dbname="${db.name}" user="${db.user}" password="${db.pass}" jdbcDriverClass="${db.class}" jdbcURLProtocol="${db.scheme}">
+	<connection key="test_key" server="${db.server}" port="${db.port}" dbname="${db.name}" user="${db.user}" password="${db.pass}" jdbcDriverClass="${db.class}" jdbcURLProtocol="${db.scheme}">
 	    <sql>
 	       SELECT DISTINCT u.uid AS userid, u.name AS Name, u.pass AS Pass,r.name AS Role
            FROM (users u LEFT JOIN users_roles ON u.uid=users_roles.uid) LEFT JOIN role r ON r.rid=users_roles.rid

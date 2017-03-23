@@ -1,226 +1,250 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <groupId>ca.islandora</groupId>
-	<artifactId>fcrepo-drupalauthfilter</artifactId>
-	<name>Islandora Drupal Servlet Filters</name>
+    <artifactId>fcrepo-drupalauthfilter</artifactId>
+    <name>Islandora Drupal Servlet Filters</name>
     <version>${fedora.version}</version>
-	<modelVersion>4.0.0</modelVersion>
-	
-	<properties>
-		<skipTests>true</skipTests>
-		<fedora.version>3.6.2</fedora.version>
-	</properties>
+    <modelVersion>4.0.0</modelVersion>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.1</version>
-			</plugin>
+    <properties>
+        <skipTests>true</skipTests>
+        <fedora.version>3.6.2</fedora.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
                     <source>1.5</source>
+                    <target>1.5</target>
                 </configuration>
             </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.16</version>
-				<configuration>
-					<skipTests>${skipTests}</skipTests>
-				</configuration>
-			</plugin>
-		</plugins>
-		<testResources>
-			<testResource>
-				<filtering>true</filtering>
-				<directory>src/test/resources</directory>
-				<includes>
-					<include>filter-drupal.xml</include>
-				</includes>
-			</testResource>
-		</testResources>
-	</build>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <skipTests>${skipTests}</skipTests>
+                </configuration>
+            </plugin>
+        </plugins>
+        <testResources>
+            <testResource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>filter-drupal.xml</include>
+                    <include>filter-drupal-multisite.xml</include>
+                </includes>
+            </testResource>
+        </testResources>
+    </build>
 
-	<dependencies>
-    <dependency>
-      <groupId>org.fcrepo</groupId>
-      <artifactId>fcrepo-common</artifactId>
-      <version>${fedora.version}</version>
-      <type>pom</type>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-    	<groupId>org.fcrepo</groupId>
-    	<artifactId>fcrepo-security-jaas</artifactId>
-    	<version>${fedora.version}</version>
-    	<type>jar</type>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-    	<groupId>com.cenqua.clover</groupId>
-    	<artifactId>clover</artifactId>
-    	<version>1.3.12</version>
-    	<scope>compile</scope>
-    </dependency>
-    <dependency>
-    	<groupId>maven</groupId>
-    	<artifactId>dom4j</artifactId>
-    	<version>1.7-20060614</version>
-    	<type>jar</type>
-    	<scope>compile</scope>
-    </dependency>
-    <dependency>
-    	<groupId>org.fcrepo</groupId>
-    	<artifactId>fcrepo-security</artifactId>
-    	<version>${fedora.version}</version>
-    	<type>pom</type>
-    </dependency>
-    <dependency>
-    	<groupId>org.fcrepo</groupId>
-    	<artifactId>fcrepo-server</artifactId>
-    	<version>${fedora.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-    	<groupId>javax.servlet</groupId>
-    	<artifactId>servlet-api</artifactId>
-    	<version>2.5</version>
-    	<scope>provided</scope>
-    </dependency>
-    <dependency>
-    	<groupId>mysql</groupId>
-    	<artifactId>mysql-connector-java</artifactId>
-    	<version>5.1.26</version>
-    	<scope>test</scope>
-    </dependency>
-    <dependency>
-    	<groupId>postgresql</groupId>
-    	<artifactId>postgresql</artifactId>
-    	<version>9.1-901.jdbc4</version>
-    	<scope>test</scope>
-    </dependency>
-	</dependencies>
-  
-  <profiles>
-  	<profile>
-  		<id>test</id>
-  		<activation>
-  			<property>
-  				<name>skipTests</name>
-  				<value>false</value>
-  			</property>
-  		</activation>
-		<properties>
-			<db.server>127.0.0.1</db.server>
-			<db.name>drupal</db.name>
-			<db.user>drupal</db.user>
-			<db.pass>drupal</db.pass>
-			<db.port>3306</db.port>
-			<db.class>com.mysql.jdbc.Driver</db.class>
-			<db.scheme>jdbc:mysql</db.scheme>
-			<db.group>mysql</db.group>
-			<db.artifact>mysql-connector-java</db.artifact>
-			<db.version>5.1.26</db.version>
-		</properties>
-		<build>
-		<plugins>
-	      <plugin>
-	        <groupId>org.codehaus.mojo</groupId>
-	        <artifactId>sql-maven-plugin</artifactId>
-	        <version>1.5</version>
-	
-	        <dependencies>
-	          <!-- specify the dependent jdbc driver here -->
-	          <dependency>
-	            <groupId>${db.group}</groupId>
-	            <artifactId>${db.artifact}</artifactId>
-	            <version>${db.version}</version>
-	          </dependency>
-	        </dependencies>
-	
-	        <!-- common configuration shared by all executions -->
-	        <configuration>
-	          <driver>${db.class}</driver>
-	          <url>${db.scheme}://${db.server}:${db.port}/${db.name}</url>
-	          <username>${db.user}</username>
-	          <password>${db.pass}</password>
-	          <settingsKey>sensibleKey</settingsKey>
-	          <!--all executions are ignored if -Dmaven.test.skip=true-->
-	          <skip>${skipTests}</skip>
-	        </configuration>
-	
-	        <executions>
-	          <execution>
-	            <id>drop-db-before-test-if-any</id>
-	            <phase>process-test-resources</phase>
-	            <goals>
-	              <goal>execute</goal>
-	            </goals>
-	            <configuration>
-	              <!-- need another database to drop the targeted one -->
-	              <url>${db.scheme}://${db.server}:${db.port}</url>
-	              <autocommit>true</autocommit>
-	              <sqlCommand>DROP DATABASE ${db.name};</sqlCommand>
-	              <!-- ignore error when database is not avaiable -->
-	              <onError>continue</onError>
-	            </configuration>
-	          </execution>
-	
-	          <execution>
-	            <id>create-db</id>
-	            <phase>process-test-resources</phase>
-	            <goals>
-	              <goal>execute</goal>
-	            </goals>
-	            <configuration>
-	              <url>${db.scheme}://${db.server}:${db.port}</url>
-	              <!-- no transaction -->
-	              <autocommit>true</autocommit>
-	              <sqlCommand>CREATE DATABASE ${db.name};</sqlCommand>
-	            </configuration>
-	          </execution>
-	
-	          <execution>
-	            <id>populate-db</id>
-	            <phase>process-test-resources</phase>
-	            <goals>
-	              <goal>execute</goal>
-	            </goals>
-	            <configuration>
-	              <autocommit>true</autocommit>
-	              <srcFiles>
-	                <srcFile>src/test/sql/basic-schema.sql</srcFile>
-	              </srcFiles>
-	            </configuration>
-	          </execution>
-	
-	          <!-- drop db after test -->
-	          <execution>
-	            <id>drop-db-after-test</id>
-	            <phase>test</phase>
-	            <goals>
-	              <goal>execute</goal>
-	            </goals>
-	            <configuration>
-  	              <url>${db.scheme}://${db.server}:${db.port}</url>
-	              <autocommit>true</autocommit>
-	              <sqlCommand>DROP DATABASE ${db.name};</sqlCommand>
-	            </configuration>
-	          </execution>
-	        </executions>
-	      </plugin>
-	      </plugins>
-		</build>
-  	</profile>
-  </profiles>
+    <dependencies>
+        <dependency>
+            <groupId>org.fcrepo</groupId>
+            <artifactId>fcrepo-common</artifactId>
+            <version>${fedora.version}</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.fcrepo</groupId>
+            <artifactId>fcrepo-security-jaas</artifactId>
+            <version>${fedora.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.cenqua.clover</groupId>
+            <artifactId>clover</artifactId>
+            <version>1.3.12</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.7-20060614</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.fcrepo</groupId>
+            <artifactId>fcrepo-security</artifactId>
+            <version>${fedora.version}</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.fcrepo</groupId>
+            <artifactId>fcrepo-server</artifactId>
+            <version>${fedora.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>woodstox</groupId>
+                    <artifactId>wstx-asl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.trippi</groupId>
+                    <artifactId>trippi-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.26</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901.jdbc4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
-  </parent>
+    <profiles>
+        <profile>
+            <id>test</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>false</value>
+                </property>
+            </activation>
+            <properties>
+                <db.server>127.0.0.1</db.server>
+                <db.name>drupal</db.name>
+                <db.user>drupal</db.user>
+                <db.pass>drupal</db.pass>
+                <db.port>3306</db.port>
+                <db.class>com.mysql.jdbc.Driver</db.class>
+                <db.scheme>jdbc:mysql</db.scheme>
+                <db.group>mysql</db.group>
+                <db.artifact>mysql-connector-java</db.artifact>
+                <db.version>5.1.26</db.version>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <version>1.5</version>
+
+                        <dependencies>
+                            <!-- specify the dependent jdbc driver here -->
+                            <dependency>
+                                <groupId>${db.group}</groupId>
+                                <artifactId>${db.artifact}</artifactId>
+                                <version>${db.version}</version>
+                            </dependency>
+                        </dependencies>
+
+                        <!-- common configuration shared by all executions -->
+                        <configuration>
+                            <driver>${db.class}</driver>
+                            <url>${db.scheme}://${db.server}:${db.port}/${db.name}</url>
+                            <username>${db.user}</username>
+                            <password>${db.pass}</password>
+                            <settingsKey>sensibleKey</settingsKey>
+                            <!--all executions are ignored if -Dmaven.test.skip=true -->
+                            <skip>${skipTests}</skip>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>drop-db-before-test-if-any</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- need another database to drop the 
+                                        targeted one -->
+                                    <url>${db.scheme}://${db.server}:${db.port}</url>
+                                    <autocommit>true</autocommit>
+                                    <sqlCommand>DROP DATABASE
+                                        ${db.name};</sqlCommand>
+                                    <!-- ignore error when database is not 
+                                        avaiable -->
+                                    <onError>continue</onError>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>create-db</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <url>${db.scheme}://${db.server}:${db.port}</url>
+                                    <!-- no transaction -->
+                                    <autocommit>true</autocommit>
+                                    <sqlCommand>CREATE DATABASE
+                                        ${db.name};</sqlCommand>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>populate-db</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <autocommit>true</autocommit>
+                                    <srcFiles>
+                                        <srcFile>src/test/sql/basic-schema.sql</srcFile>
+                                    </srcFiles>
+                                </configuration>
+                            </execution>
+
+                            <!-- drop db after test -->
+                            <execution>
+                                <id>drop-db-after-test</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <url>${db.scheme}://${db.server}:${db.port}</url>
+                                    <autocommit>true</autocommit>
+                                    <sqlCommand>DROP DATABASE
+                                        ${db.name};</sqlCommand>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 </project>
