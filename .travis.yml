@@ -1,18 +1,57 @@
+dist: trusty
+#Docker container based
 sudo: false
 language: java
 cache:
   directories:
   - $HOME/.m2
+
 jdk:
-  - openjdk6
   - openjdk7
-  - oraclejdk7
   - oraclejdk8
+  - oraclejdk9
 env:
   - FEDORA_VERSION=3.6.2
   - FEDORA_VERSION=3.7.0
   - FEDORA_VERSION=3.7.1
   - FEDORA_VERSION=3.8.1
+matrix:
+  include:
+     - jdk: openjdk6
+       env: FEDORA_VERSION="3.6.2"
+       addons:
+         apt:
+           packages:
+             - openjdk-6-jdk
+       install:
+         - source $TRAVIS_BUILD_DIR/tests/scripts/mavenforopenjdk6.sh
+     - jdk: openjdk6
+       env: FEDORA_VERSION="3.7.0"
+       addons:
+         apt:
+           packages:
+             - openjdk-6-jdk
+       install:
+        - source $TRAVIS_BUILD_DIR/tests/scripts/mavenforopenjdk6.sh
+     - jdk: openjdk6
+       env: FEDORA_VERSION="3.7.1"
+       addons:
+         apt:
+           packages:
+             - openjdk-6-jdk
+       install:
+        - source $TRAVIS_BUILD_DIR/tests/scripts/mavenforopenjdk6.sh
+     - jdk: openjdk6
+       env: FEDORA_VERSION="3.8.1"
+       addons:
+         apt:
+           packages:
+             - openjdk-6-jdk
+       install:
+       - source $TRAVIS_BUILD_DIR/tests/scripts/mavenforopenjdk6.sh
+  allow_failures:
+    - jdk: oraclejdk9
+
 script:
   - mvn test -DskipTests=false -Dfedora.version=$FEDORA_VERSION -Ddb.name=drupal_test -Ddb.user=travis -Ddb.pass=""
   - mvn test -DskipTests=false -Dfedora.version=$FEDORA_VERSION -Ddb.name=drupal_test -Ddb.user=postgres -Ddb.pass="" -Ddb.port=5432 -Ddb.class="org.postgresql.Driver" -Ddb.scheme="jdbc:postgresql" -Ddb.group=postgresql -Ddb.artifact=postgresql -Ddb.version="9.1-901.jdbc4"
