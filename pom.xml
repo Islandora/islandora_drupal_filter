@@ -3,7 +3,7 @@
     <groupId>ca.islandora</groupId>
     <artifactId>fcrepo-drupalauthfilter</artifactId>
     <name>Islandora Drupal Servlet Filters</name>
-    <version>7.1.11-SNAPSHOT</version>
+    <version>7.1.12-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
     <properties>
         <skipTests>true</skipTests>
