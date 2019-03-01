@@ -16,39 +16,6 @@ env:
   - FEDORA_VERSION=3.7.1
   - FEDORA_VERSION=3.8.1
 matrix:
-  include:
-     - jdk: openjdk6
-       env: FEDORA_VERSION="3.6.2"
-       addons:
-         apt:
-           packages:
-             - openjdk-6-jdk
-       install:
-         - source $TRAVIS_BUILD_DIR/tests/scripts/mavenforopenjdk6.sh
-     - jdk: openjdk6
-       env: FEDORA_VERSION="3.7.0"
-       addons:
-         apt:
-           packages:
-             - openjdk-6-jdk
-       install:
-        - source $TRAVIS_BUILD_DIR/tests/scripts/mavenforopenjdk6.sh
-     - jdk: openjdk6
-       env: FEDORA_VERSION="3.7.1"
-       addons:
-         apt:
-           packages:
-             - openjdk-6-jdk
-       install:
-        - source $TRAVIS_BUILD_DIR/tests/scripts/mavenforopenjdk6.sh
-     - jdk: openjdk6
-       env: FEDORA_VERSION="3.8.1"
-       addons:
-         apt:
-           packages:
-             - openjdk-6-jdk
-       install:
-       - source $TRAVIS_BUILD_DIR/tests/scripts/mavenforopenjdk6.sh
   allow_failures:
     - jdk: oraclejdk9
 
